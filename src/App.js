@@ -1,25 +1,38 @@
-import logo from './logo.svg';
 import './App.css';
+import Intro from './components/Intro'
+import React from 'react'
+import Quiz from './components/Quiz'
 
 function App() {
+
+  const [hasStarted, setHasStarted] = React.useState(false)
+  const [quiz, setQuiz] = React.useState([])
+
+  function startQuiz() {
+    setHasStarted(prevState => !prevState)
+  }
+
+  React.useEffect(() => {
+    fetch("https://opentdb.com/api.php?amount=5&type=multiple")
+      .then(response => response.json())
+      .then(data => setQuiz(data.results))
+
+  }, [])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    hasStarted 
+    ? 
+    <Quiz 
+      questions={quiz}
+      didItStart={setHasStarted}
+    /> 
+    : 
+    <Intro 
+      startQuiz={startQuiz}
+    />
+    
+  )
 }
 
 export default App;
